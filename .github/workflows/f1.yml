@@ -1,0 +1,40 @@
+name: TPL SCORE F1 피드
+
+# 30분마다 깨어나지만, Jolpica 호출 여부는 Worker가 결정:
+#   일정 12시간마다 1회 · 결과는 결승 시작 2시간 뒤부터 나올 때까지 30분마다 · 그 외엔 호출 0회
+# (야구 피드 feed.yml 예약 실행은 꺼져 있음 — 이 파일과 별개)
+on:
+  schedule:
+    - cron: '13,43 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write   # 하루 1번 status-f1.json 커밋 (60일 비활성 시 예약 실행 꺼짐 방지)
+
+concurrency:
+  group: f1
+  cancel-in-progress: false
+
+jobs:
+  f1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: F1 피드 실행
+        env:
+          INGEST_TOKEN: ${{ secrets.INGEST_TOKEN }}
+          FEED_URL: ${{ secrets.FEED_URL }}
+        run: node f1.mjs
+      - name: 예약 실행 유지 (하루 1번)
+        run: |
+          if [ -n "$(git status --porcelain status-f1.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add status-f1.json
+            git commit -m "status-f1: $(date -u +%F)"
+            git pull --rebase -q && git push
+          fi
