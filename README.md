@@ -13,5 +13,5 @@ TPL SCORE 사이트의 야구(MLB·KBO) 일정과 점수를 [API-SPORTS](https:/
 
 ## F1 (f1.yml)
 - [Jolpica](https://github.com/jolpica/jolpica-f1) F1 데이터(키 없음, 비상업 무료, CC BY-NC-SA 4.0)를 받아 사이트에 넘깁니다. Cloudflare 서버에서는 Jolpica가 막아서 여기서 부릅니다.
-- 30분마다 깨어나지만 실제 호출은 일정 12시간마다 1회, 결승 뒤 결과가 나올 때까지 30분마다뿐입니다.
+- 레이스 주말(UTC 금~월)에만 30분마다 깨어나고, 실제 호출은 일정 12시간마다 1회, 결승 뒤 결과가 나올 때까지 30분마다뿐입니다.
 - 야구 피드(feed.yml) 예약 실행은 꺼져 있습니다.

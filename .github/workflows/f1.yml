@@ -1,11 +1,11 @@
 name: TPL SCORE F1 피드
 
-# 30분마다 깨어나지만, Jolpica 호출 여부는 Worker가 결정:
+# 레이스 주말(UTC 금~월)에만 30분마다 깨어남. Jolpica 호출 여부는 Worker가 결정:
 #   일정 12시간마다 1회 · 결과는 결승 시작 2시간 뒤부터 나올 때까지 30분마다 · 그 외엔 호출 0회
 # (야구 피드 feed.yml 예약 실행은 꺼져 있음 — 이 파일과 별개)
 on:
   schedule:
-    - cron: '13,43 * * * *'
+    - cron: '13,43 * * * 5,6,0,1'   # 레이스 주말만 (UTC 금·토·일·월, 30분마다). 평일엔 실행 없음
   workflow_dispatch:
 
 permissions:
