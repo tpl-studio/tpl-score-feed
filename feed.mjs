@@ -63,6 +63,7 @@ async function run() {
       results.push({ date, ok: r.ok, error: r.error, remaining: r.remaining, games });
       console.log(`${sport} ${date}: ${r.ok ? `${games.length}경기` : `실패 (${r.error})`} · 서버 남은 한도 ${r.remaining ?? '?'}`);
       total++;
+      if (!r.ok && /do not have access to this date/i.test(r.error || '')) continue; // 무료 플랜 범위 밖 날짜 → 건너뜀
       if (!r.ok) break; // 분당 한도 등 → 다음 실행(15분 뒤)에 이어서
       if (r.remaining != null && Number(r.remaining) <= 100 - plan.cap) { console.log(`${sport}: 남은 한도가 적어 멈춤`); break; }
     }
