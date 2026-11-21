@@ -103,6 +103,10 @@ async function check() {
       console.log(`[${label}] id ${l.id} · ${l.name} · ${l.country?.name} · 시즌 ${(l.seasons || []).map((x) => x.season).slice(-3).join(', ')}`);
     }
   }
+  const today = new Date().toISOString().slice(0, 10);
+  const t = await apisports(BB, `/games?date=${today}&timezone=UTC`);
+  if (!t.ok) console.log(`[${today} 야구] 실패: ${t.error}`);
+  else { const by = {}; for (const x of t.data.response || []) { const k = `${x.league?.name} (시즌 ${x.league?.season})`; by[k] = (by[k] || 0) + 1; } console.log(`[${today} 야구 전체 리그] ${JSON.stringify(by)}`); }
   const g = await apisports(BB, '/games?date=2026-07-01&timezone=UTC');
   if (!g.ok) console.log(`[2026-07-01 야구] 실패: ${g.error}`);
   else {
