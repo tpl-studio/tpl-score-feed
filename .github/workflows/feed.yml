@@ -1,0 +1,45 @@
+name: TPL SCORE 야구·농구 피드
+
+# 15분마다 실행. 실제 API-SPORTS 호출 여부는 Worker가 결정:
+#   경기 중일 때만 15분 간격 · 경기 없으면 하루 1번 일정 확인 · 비시즌 3일에 1번 · 종목별 하루 80회 상한
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'   # 정각 혼잡을 피해 7분 어긋나게
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'run = 평소 실행 / check = 키·리그·시즌 점검'
+        required: false
+        default: 'run'
+
+permissions:
+  contents: write   # 하루 1번 status.json 커밋 (60일 비활성 시 예약 실행 꺼짐 방지)
+
+concurrency:
+  group: feed
+  cancel-in-progress: false
+
+jobs:
+  feed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 피드 실행
+        env:
+          APISPORTS_KEY: ${{ secrets.APISPORTS_KEY }}
+          INGEST_TOKEN: ${{ secrets.INGEST_TOKEN }}
+          FEED_URL: ${{ secrets.FEED_URL }}
+        run: node feed.mjs "${{ github.event.inputs.mode || 'run' }}"
+      - name: 예약 실행 유지 (하루 1번)
+        run: |
+          if [ -n "$(git status --porcelain status.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add status.json
+            git commit -m "status: $(date -u +%F)"
+            git push
+          fi
