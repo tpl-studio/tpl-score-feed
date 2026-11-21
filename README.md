@@ -1,8 +1,8 @@
-# TPL SCORE 야구·농구 피드
+# TPL SCORE 야구 피드
 
-TPL SCORE 사이트의 야구(MLB·KBO)·농구(NBA) 일정과 점수를 [API-SPORTS](https://api-sports.io) 무료 등급에서 받아 사이트에 넘겨주는 GitHub Actions입니다.
+TPL SCORE 사이트의 야구(MLB·KBO) 일정과 점수를 [API-SPORTS](https://api-sports.io) 무료 등급에서 받아 사이트에 넘겨주는 GitHub Actions입니다.
 
-- 무료 플랜은 어제·오늘·내일만 조회할 수 있어서, 야구·농구는 내일 경기까지 보입니다.
+- 무료 플랜은 어제·오늘·내일만 조회할 수 있어서, 야구는 내일 경기까지 보입니다.
 - 15분마다 실행되지만, API-SPORTS를 실제로 부르는 건 **경기 중**이거나 **하루 1번 일정 확인** 때뿐입니다.
 - 한 번 호출로 그날 경기를 전부 받습니다 (야구는 MLB·KBO 한 번에).
 - 종목별 하루 80회에서 멈춥니다 (무료 한도 100회).
